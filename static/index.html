@@ -1,0 +1,140 @@
+<!doctype html>
+<html data-ng-app="fertilizer">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="css/bootstrap.min.css">
+
+<script src="scripts/angular.min.js"></script>
+<script src="scripts/ng-websocket.js"></script>
+<script src="scripts/fertilizer.js"></script>
+
+<title>Kunstd&uuml;nger</title>
+</head>
+<body data-ng-controller="FertilizerController as ctrl">
+	<div class="container-fluid">
+		<form name="Fertilizer Form" method="post">
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="row"><div class="col-sm-12">&nbsp;</div></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<button name="kali" data-ng-click="ctrl.perform('KALI')" title="KALI" class="btn btn-block btn-lg btn-primary">
+								KALI
+							</button>
+						</div>
+						<div class="col-sm-6">
+							<button name="kas" data-ng-click="ctrl.perform('KAS')" title="KAS" class="btn btn-block btn-lg btn-primary">
+								KAS
+							</button>
+						</div>
+					</div>
+					<div class="row"><div class="col-sm-12">&nbsp;</div></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<button name="phosphor" data-ng-click="ctrl.perform('PHOSPHOR')" title="PHOSPHOR" class="btn btn-block btn-lg btn-primary">
+								PHOSPHOR
+							</button>
+						</div>
+						<div class="col-sm-6">
+							<button name="nitrogen" data-ng-click="ctrl.perform('NITROGEN')" title="NITROGEN" class="btn btn-block btn-lg btn-primary">
+								NITROGEN
+							</button>
+						</div>
+					</div>
+					<div class="row"><div class="col-sm-12">&nbsp;</div></div>
+					<div class="form-row">
+						<div class="col-sm-6">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon5">Impuls pro Ha</span>
+								<input name="fertilizerImpulsePerHa" data-ng-model="data.fertilizerImpulsePerHa" class="form-control" aria-describedby="basic-addon5"/>
+							</div>
+						</div>
+					</div>
+					<div class="row"><div class="col-sm-12">&nbsp;</div></div>
+					<div class="form-row">
+						<div class="col-sm-6">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon8">Impulse pro 100m</span>
+								<input name="distanceImpulePer100M" data-ng-model="data.distanceImpulePer100M" class="form-control" aria-describedby="basic-addon8"/>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<button name="apply" data-ng-click="ctrl.applyChanges()" class="btn btn-block btn-primary">
+								<span class="glyphicon glyphicon-ok"></span>
+							</button>
+						</div>
+					</div>
+					<div class="row"><div class="col-sm-12">&nbsp;</div></div>
+					<div class="form-row">
+						<div class="col-sm-6">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon2">GPIO-Strecke</span>
+								<input name="gpio-distance" data-ng-model="data.gpio-distance" class="form-control" aria-describedby="basic-addon2"/>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon4">GPIO-Menge</span>
+								<input name="gpio-amount" data-ng-model="data.gpio-amount" class="form-control" aria-describedby="basic-addon4"/>
+							</div>
+						</div>
+					</div>
+					<div class="row"><div class="col-sm-12">&nbsp;</div></div>
+					<div class="form-row">
+						<div class="col-sm-6">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon1">GPIO-Motor Links</span>
+								<input name="gpio-motor-left" data-ng-model="data.gpio-motor-left" class="form-control" aria-describedby="basic-addon1"/>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon3">GPIO-Motor Rechts</span>
+								<input name="gpio-motor-right" data-ng-model="data.gpio-motor-right" class="form-control" aria-describedby="basic-addon3"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="row"><div class="col-sm-12">&nbsp;</div></div>
+					<div class="row">
+						<div class="col-sm-6">
+							<button name="play" data-ng-click="ctrl.stop()" class="btn btn-block btn-lg btn-primary">
+								<span class="glyphicon glyphicon-remove"></span> Zur&uuml;setzen
+							</button>
+						</div>
+						<div class="col-sm-6">
+							<button name="stop" data-ng-click="ctrl.stop()" class="btn btn-block btn-lg btn-danger">
+								<span class="glyphicon glyphicon-off"></span>
+							</button>
+						</div>
+					</div>
+					<div class="row"><div class="col-sm-12">&nbsp;</div></div>
+					<div class="row">
+						<div class="col-sm-12">
+							<h1 class="display-1">								
+								{{response.distance}} <small>zur&uuml;ckgelegte Distanz in m</small>
+							</h1>
+							<h1 class="display-1">
+								{{response.amount}} <small>ausgestreute Menge in kg</small>
+							</h1>
+							<h1 class="display-1">
+								{{response.impulsesOfDistance}} <small>Impulse Distanz</small>
+							</h1>
+							<h1 class="display-1">
+								{{response.impulsesOfAmount}} <small>Impulse Menge</small>
+							</h1>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>
