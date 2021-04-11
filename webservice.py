@@ -16,8 +16,7 @@ class RequestHandler:
         elif path == 'reset':
             return json.dumps(fertilizer.reset())
         elif path == 'calculate':
-            inputData = json.loads(web.data())
-            return json.dumps(fertilizer.calculate(inputData))
+            return json.dumps(fertilizer.calculate())
 
     def POST(self, path):
         inputData = json.loads(web.data())

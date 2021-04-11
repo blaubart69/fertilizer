@@ -8,9 +8,8 @@ def reset():
     print ('fertilizer:reset()')
     return {'distance': 0, 'amount': 10, 'calculated': 10}
 
-def calculate(data):
+def calculate():
     print ('fertilizer:calculate()')
-    print (data)
     return {'distance': 45, 'amount': 10, 'calculated': 10}
 
 def applyChanges(data):

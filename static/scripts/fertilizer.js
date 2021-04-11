@@ -1,5 +1,5 @@
 angular.module('fertilizer', [])
-    .controller('FertilizerController', function ($scope, $http) {
+    .controller('FertilizerController', function ($scope, $http, $interval) {
         // initialize the content type of post request with text/plaien
         // TO AVOID triggering the pre-flight OPTIONS request
         $http.defaults.headers.post["Content-Type"] = "text/plain";
@@ -21,7 +21,7 @@ angular.module('fertilizer', [])
             $http.get('/stop').then(this.handleResponse);
         };
         this.reset = function () {
-            $http.get('/reset', $scope.data).then(this.handleResponse);
+            $http.get('/reset').then(this.handleResponse);
         };
         this.calculate = function () {
             $http.get('/calculate').then(this.handleResponse);
@@ -38,5 +38,22 @@ angular.module('fertilizer', [])
             }
         };
 
+        var stop;
+        this.startCalculation = function() {
+            // Don't start a new fight if we are already fighting
+            if (angular.isDefined(stop)) return;
+  
+            stop = $interval(this.calculate, 60000);
+        };
+        this.stopCalculation = function() {
+            if (angular.isDefined(stop)) {
+              $interval.cancel(stop);
+              stop = undefined;
+            }
+        };
+        // Make sure that the interval is destroyed too
+        $scope.$on('$destroy', this.stopCalculation);
+
+        this.startCalculation();
         console.log("initialize controller");
     });
