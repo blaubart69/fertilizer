@@ -23,14 +23,12 @@
 			<div class="row">
 				<div class="col-sm-8">
 					<h1 class="display-1">
-						{{response.calculated}} <small>aktueller Auswurf (kg / ha)</small>
+						<table>
+							<tr><td><small>aktueller Auswurf (kg / ha)</small></td><td>&nbsp;{{response.calculated}}</td></tr>
+							<tr><td><small>zur&uuml;ckgelegte Distanz in m</small></td><td>&nbsp;{{response.distance}}</td></tr>
+							<tr><td><small>ausgestreute Menge in kg</small></td><td>&nbsp;{{response.amount}}</td></tr>
+						</table>
 					</h1>
-					<h3 class="display-1">								
-						{{response.distance}} <small>zur&uuml;ckgelegte Distanz in m</small>
-					</h3>
-					<h3 class="display-1">
-						{{response.amount}} <small>ausgestreute Menge in kg</small>
-					</h3>
 				</div>
 				<div class="col-sm-4">
 					<div class="col-sm-12">
