@@ -1,34 +1,42 @@
-angular.module('fertilizer', ['ngWebsocket'])
-.controller('FertilizerController', function($scope, $websocket) {	
-	$scope.data = {
-		fertilizerImpulsePerHa: 50,
-		distanceImpulePer100M:  200
-	};
-	$scope.response = {
-		distance: 0,
-		amount: 0,
-		impulsesOfDistance: 0,
-		impulsesOfAmount: 0
-	};
-	
-    this.stop = function() {
-	};
-    this.perform = function(direction) {
-	};
-    this.applyChanges = function() {
-	};
+angular.module('fertilizer', [])
+    .controller('FertilizerController', function ($scope, $http) {
+        // initialize the content type of post request with text/plaien
+        // TO AVOID triggering the pre-flight OPTIONS request
+        $http.defaults.headers.post["Content-Type"] = "text/plain";
 
-    var ws = $websocket.$new({
-        url: 'ws://localhost:12345',
-        reconnect: true // it will reconnect after 2 seconds
+        $scope.fertilizers = ['Kali', 'Phosphor', 'Harnstoff', 'KAS'];
+        $scope.data = {
+            amountPerArea: 50,
+            fertilizer: 'Kali',
+            gpioDistance: 12,
+            gpioAmount: 13
+        };
+        $scope.response = {
+            distance: 0,
+            amount: 0,
+            calculated: 0
+        };
+
+        this.stop = function () {
+            $http.get('/stop').then(this.handleResponse);
+        };
+        this.reset = function () {
+            $http.get('/reset', $scope.data).then(this.handleResponse);
+        };
+        this.calculate = function () {
+            $http.get('/calculate').then(this.handleResponse);
+        };
+        this.applyChanges = function () {
+            $http.post('/applyChanges', $scope.data).then(this.handleResponse);
+        };
+
+        this.handleResponse = function (response) {
+            console.log(response);
+            if (response.status == 200) {
+                console.log('data', response.data);
+                $scope.response = response.data;
+            }
+        };
+
+        console.log("initialize controller");
     });
-
-    ws.$on('$open', function () {
-        console.log('Here we are and I\'m pretty sure to get back here for another time at least!');
-    })
-    .$on('$close', function () {
-        console.log('Got close, damn you silly wifi!');
-    });
-
-    console.log("initialize controller");
-});
