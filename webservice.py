@@ -15,13 +15,13 @@ class RequestHandler:
             return json.dumps(fertilizer.stop())
         elif path == 'reset':
             return json.dumps(fertilizer.reset())
-        elif path == 'calculate':
-            return json.dumps(fertilizer.calculate())
 
     def POST(self, path):
         inputData = json.loads(web.data())
         if path == 'applyChanges':
             return json.dumps(fertilizer.applyChanges(inputData))
+        elif path == 'calculate':
+            return json.dumps(fertilizer.calculate(inputData))
         else:
             print ('Nothing')
 

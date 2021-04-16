@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import random
 
 def stop():
     print ('fertilizer:stop()')
@@ -8,9 +9,11 @@ def reset():
     print ('fertilizer:reset()')
     return {'distance': 0, 'amount': 10, 'calculated': 10}
 
-def calculate():
+def calculate(data):
     print ('fertilizer:calculate()')
-    return {'distance': 45, 'amount': 10, 'calculated': 10}
+    print (data)
+    distance = random.randint(35, 50)
+    return {'distance': distance, 'amount': 10, 'calculated': 10}
 
 def applyChanges(data):
     print ('fertilizer:applyChanges()')
