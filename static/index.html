@@ -55,7 +55,14 @@
 						<option data-ng-repeat="f in fertilizers">{{f}}</option>
 					</select>
 				</div>
+				<div class="col-sm-4">
+					<label>&nbsp;</label>
+					<button name="apply" data-ng-click="ctrl.applyChanges()" class="btn btn-block btn-primary">
+						<span class="glyphicon glyphicon-ok"></span>
+					</button>
+				</div>
 			</div>
+			<!--
 			<div class="row"><div class="col-sm-12">&nbsp;</div></div>
 			<div class="form-row">
 				<div class="col-sm-4">
@@ -73,6 +80,7 @@
 					</button>
 				</div>
 			</div>
+			-->
 		</form>
 	</div>
 </body>
