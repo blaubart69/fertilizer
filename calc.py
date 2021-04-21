@@ -3,33 +3,35 @@
 import time
 import RPi.GPIO as GPIO
 
+import SignalBuf
+
 _BCM_wheel  = 23
 _BCM_roller = 24
 
-_cnt_signal_wheel  = 0
-_cnt_signal_roller = 0
+_bufSizeSignals = 1024
 
-_bufWheel  = [0]*1024
-_bufRoller = [0]*1024 
+_bufWheel  = SignalBuf(_bufSizeSignals)
+_bufRoller = SignalBuf(_bufSizeSignals)
 
-def _signal_wheel(sig):
-	global _cnt_signal_wheel
-	_cnt_signal_wheel += 1
+def _interrupt_callback(sig):
+	global _bufWheel,_bufRoller
 
-def _signal_roller(sig):
-	global _cnt_signal_roller
-	_cnt_signal_roller += 1
+    timestampSignal = time.monotonic_ns()
+
+    if sig == _BCM_wheel:
+	    _bufWheel.insert(timestampSignal)
+    elif sig == _BCM_roller:
+        _bufRoller.insert(timestampSignal)
+    else:
+        print("signal from wrong pin {}".format(sig));
 
 def setupGPIO():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(BCM_wheel, GPIO.IN)
-    GPIO.add_event_detect(_BCM_wheel, GPIO.FALLING, callback=_signal_wheel)
-    GPIO.add_event_detect(_BCM_wheel, GPIO.FALLING, callback=_signal_roller)
+    GPIO.add_event_detect(_BCM_wheel,  GPIO.FALLING, callback=_interrupt_callback)
+    GPIO.add_event_detect(_BCM_roller, GPIO.FALLING, callback=_interrupt_callback)
 
-def resetCounters():
-    global _cnt_signal_roller, _cnt_signal_wheel, _bufRoller, _bufWheel
-    _cnt_signal_wheel = 0
-    _cnt_signal_roller = 0
-    _bufRoller = [0]*1024
-    _bufWheel  = [0]*1024
-
+def reset():
+	global _bufWheel,_bufRoller
+    _bufWheel  = SignalBuf(_bufSizeSignals)
+    _bufRoller = SignalBuf(_bufSizeSignals)
