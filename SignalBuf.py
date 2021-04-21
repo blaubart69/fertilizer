@@ -1,5 +1,3 @@
-import time
-
 class RingBuf:
     def __init__(self,size):
         self.buf = [0] * size
@@ -7,7 +5,7 @@ class RingBuf:
 
     def insert(self,val):
         self.idx += 1
-        if self.idx = len(self.buf):
+        if self.idx == len(self.buf):
             self.idx = 0
         self.buf[self.idx] = val
 
@@ -20,3 +18,18 @@ class SignalBuf:
         self.ticks += 1
         self.rbuf.insert(timestamp)
 
+    def getSignalsWithinTimespan(self, timestampNow, timespan):
+        cnt=0
+        readIdx = self.rbuf.idx
+
+        for i in range(len(self.rbuf.buf)):
+            if (timestampNow - self.rbuf[readIdx]) > timespan:
+                return cnt
+                break
+            else:
+                cnt += 1
+                readIdx =- 1
+                if readIdx < 0:
+                    readIdx = len(self.rbuf.buf)-1
+
+        return -1

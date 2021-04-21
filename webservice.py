@@ -7,6 +7,7 @@ urls = (
     '/(.*)', 'RequestHandler'
 )
 app = web.application(urls, globals())
+_calc = calc.Calc(5000, duenger_kg=6.1, duenger_signals=20, wheel_meter=50, wheel_signals=377)
 
 class RequestHandler:
 
@@ -16,7 +17,7 @@ class RequestHandler:
         elif path == 'stop':
             return json.dumps(fertilizer.stop())
         elif path == 'reset':
-            calc.reset()
+            _calc.reset()
             return json.dumps(fertilizer.reset())
 
     def POST(self, path):
@@ -29,6 +30,7 @@ class RequestHandler:
             print ('Nothing')
 
 if __name__ == "__main__":
-    calc.setupGPIO()
+    # _calc.setupGPIO()
+    _calc.setupFakeGPIOsignals()
     app.run()
 	
