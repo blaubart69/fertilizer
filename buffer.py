@@ -9,7 +9,7 @@ class RingBuf:
 
     def insert_timestamp(self,val):
         self.overallSignals += 1
-        self.idx += 1        
+        self.idx += 1
         if self.idx == len(self.buf):
             self.idx = 0
         self.buf[self.idx] = val
@@ -21,7 +21,7 @@ class SignalBuf:
     def __init__(self, bufSize):
         self.ticks = 0
         self.rbuf = RingBuf(bufSize)
-    
+
     def tick(self,timestamp):
         self.ticks += 1
         self.rbuf.insert_timestamp(timestamp)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import time
-#import RPi.GPIO as GPIO
-import threading
+import RPi.GPIO as GPIO
+#import threading
 import buffer
 
 _BCM_wheel  = 23
@@ -44,28 +44,29 @@ def _interrupt_callback(sig):
     else:
         print("signal from wrong pin {}".format(sig))
 
-#   def setupGPIO():
-#       GPIO.setmode(GPIO.BCM)
-#       GPIO.setup(_BCM_wheel, GPIO.IN)
-#       GPIO.add_event_detect(_BCM_wheel,  GPIO.FALLING, callback=_interrupt_callback)
-#       GPIO.add_event_detect(_BCM_roller, GPIO.FALLING, callback=_interrupt_callback)
+def setupGPIO():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(_BCM_wheel, GPIO.IN)
+    GPIO.setup(_BCM_roller, GPIO.IN)
+    GPIO.add_event_detect(_BCM_wheel,  GPIO.FALLING, callback=_interrupt_callback)
+    GPIO.add_event_detect(_BCM_roller, GPIO.FALLING, callback=_interrupt_callback)
 
-_fakeWheelDelay = 0.1
-_fakeRollerDelay = 3.33
+#_fakeWheelDelay = 0.1
+#_fakeRollerDelay = 3.33
 
-def fakeWheelSignal():
-    _interrupt_callback(_BCM_wheel)
-    threading.Timer(_fakeWheelDelay, fakeWheelSignal).start()
+#def fakeWheelSignal():
+#    _interrupt_callback(_BCM_wheel)
+#    threading.Timer(_fakeWheelDelay, fakeWheelSignal).start()
 
-def fakeRollerSignal():
-    _interrupt_callback(_BCM_roller)
-    threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()
+#def fakeRollerSignal():
+#    _interrupt_callback(_BCM_roller)
+#    threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()
 
-def setupFakeGPIOsignals():
-    print("setup fake signals...")
-    threading.Timer(_fakeWheelDelay, fakeWheelSignal).start()
-    threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()
-    print("setup fake signals...done")
+#def setupFakeGPIOsignals():
+#    print("setup fake signals...")
+#    threading.Timer(_fakeWheelDelay, fakeWheelSignal).start()
+#    threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()
+#    print("setup fake signals...done")
 
 def reset():
     global overallKilo, overallMeter
