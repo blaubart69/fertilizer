@@ -21,7 +21,6 @@ class SignalBuf:
     def __init__(self, bufSize):
         self.ticks = 0
         self.rbuf = RingBuf(bufSize)
-        print(f"SignalConstructor.söf={self.rbuf.idx}")
     
     def tick(self,timestamp):
         self.ticks += 1
