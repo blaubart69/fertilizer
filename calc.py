@@ -3,99 +3,105 @@
 import time
 #import RPi.GPIO as GPIO
 import threading
+import buffer
 
-from signalBuf import SignalBuf 
+_BCM_wheel  = 23
+_BCM_roller = 24
+_bufSizeSignals = 1024
+METERS_PER_HEKTAR = 10000 / 15
+
+_bufWheel  = buffer.SignalBuf(_bufSizeSignals)
+_bufRoller = buffer.SignalBuf(_bufSizeSignals)
+_timespanMillisToWatch = 5000
+
+_signals_per_meter = 0
+_signals_per_kilo =  0
+
+overallMeter = 0
+overallKilo = 0
+
+def create(timespanMillisToWatch=5000, duenger_kg=6.1, duenger_signals=30, wheel_meter=50, wheel_signals=377):
+    global _timespanMillisToWatch, _signals_per_meter, _signals_per_kilo
+    _timespanMillisToWatch = timespanMillisToWatch
+
+    _signals_per_meter = wheel_signals   / wheel_meter
+    _signals_per_kilo =  duenger_signals / duenger_kg
 
 def getMillis():
     milliseconds = int(time.time() * 1000)
     return milliseconds
 
-class Calc:
 
-    _BCM_wheel  = 23
-    _BCM_roller = 24
-    _bufSizeSignals = 1024
-    METERS_PER_HEKTAR = 10000 / 15
+def _interrupt_callback(sig):
+    timestampSignal = getMillis()
 
-    def __init__(self,timespanMillisToWatch,duenger_kg, duenger_signals, wheel_meter, wheel_signals):
+    #print("signal from {}".format(sig))
 
-        self._bufWheel  = SignalBuf(self._bufSizeSignals)
-        self._bufRoller = SignalBuf(self._bufSizeSignals)
-        self._timespanMillisToWatch = timespanMillisToWatch
+    if sig == _BCM_wheel:
+        _bufWheel.tick(timestampSignal)
+    elif sig == _BCM_roller:
+        _bufRoller.tick(timestampSignal)
+    else:
+        print("signal from wrong pin {}".format(sig))
 
-        self._signals_per_meter = wheel_signals   / wheel_meter
-        self._signals_per_kilo =  duenger_signals / duenger_kg
+#   def setupGPIO():
+#       GPIO.setmode(GPIO.BCM)
+#       GPIO.setup(_BCM_wheel, GPIO.IN)
+#       GPIO.add_event_detect(_BCM_wheel,  GPIO.FALLING, callback=_interrupt_callback)
+#       GPIO.add_event_detect(_BCM_roller, GPIO.FALLING, callback=_interrupt_callback)
 
-        self.overallMeter = 0
-        self.overallKilo = 0
+_fakeWheelDelay = 0.1
+_fakeRollerDelay = 3.33
 
-    def _interrupt_callback(self,sig):
-        timestampSignal = getMillis()
+def fakeWheelSignal():
+    _interrupt_callback(_BCM_wheel)
+    threading.Timer(_fakeWheelDelay, fakeWheelSignal).start()
 
-        #print("signal from {}".format(sig))
+def fakeRollerSignal():
+    _interrupt_callback(_BCM_roller)
+    threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()
 
-        if sig == self._BCM_wheel:
-            self._bufWheel.tick(timestampSignal)
-        elif sig == self._BCM_roller:
-            self._bufRoller.tick(timestampSignal)
-        else:
-            print("signal from wrong pin {}".format(sig))
+def setupFakeGPIOsignals():
+    print("setup fake signals...")
+    threading.Timer(_fakeWheelDelay, fakeWheelSignal).start()
+    threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()
+    print("setup fake signals...done")
 
- #   def setupGPIO(self):
- #       GPIO.setmode(GPIO.BCM)
- #       GPIO.setup(self._BCM_wheel, GPIO.IN)
- #       GPIO.add_event_detect(self._BCM_wheel,  GPIO.FALLING, callback=_interrupt_callback)
- #       GPIO.add_event_detect(self._BCM_roller, GPIO.FALLING, callback=_interrupt_callback)
+def reset():
+    global overallKilo, overallMeter
+    print("reset!!")
+    overallMeter = 0
+    overallKilo = 0
 
-    _fakeWheelDelay = 0.1
-    _fakeRollerDelay = 0.3
+def checkSignals(cntWheel, cntRoller):
+    cntBadSignal = 0
 
-    def fakeWheelSignal(self):
-        self._interrupt_callback(self._BCM_wheel)
-        threading.Timer(self._fakeWheelDelay, self.fakeWheelSignal).start()
+    if cntWheel == 0:
+        print("E: no signals from wheel")
+        cntBadSignal += 1
+    if cntRoller == 0:
+        print("E: no signals from roller")
+        cntBadSignal += 1
 
-    def fakeRollerSignal(self):
-        self._interrupt_callback(self._BCM_roller)
-        threading.Timer(self._fakeRollerDelay, self.fakeRollerSignal).start()
+    return (cntBadSignal == 0)
 
-    def setupFakeGPIOsignals(self):
-        print("setup fake signals...")
-        threading.Timer(self._fakeWheelDelay, self.fakeWheelSignal).start()
-        threading.Timer(self._fakeRollerDelay, self.fakeRollerSignal).start()
-        print("setup fake signals...done")
+def current():
+    global overallMeter, overallKilo
+    currentMillis = getMillis()
+    signalsWheel  = _bufWheel.getSignalsWithinTimespan(timestampNow=currentMillis,  timespan=_timespanMillisToWatch)
+    signalsRoller = _bufRoller.getSignalsWithinTimespan(timestampNow=currentMillis, timespan=_timespanMillisToWatch)
+    print("signals wheel: {}\tsignals roller: {}".format(signalsWheel, signalsRoller))
 
-    def reset(self):
-        self._bufWheel  = SignalBuf(_bufSizeSignals)
-        self._bufRoller = SignalBuf(_bufSizeSignals)
+    if checkSignals(signalsWheel, signalsRoller) == False:
+        return 0,0,0
 
-    def checkSignals(self,cntWheel, cntRoller):
-        cntBadSignal = 0
+    meters_in_timespan = signalsWheel  / _signals_per_meter
+    kilos_in_timespan  = signalsRoller / _signals_per_kilo
 
-        if cntWheel == 0:
-            print("E: no signals from wheel")
-            cntBadSignal += 1
-        if cntRoller == 0:
-            print("E: no signals from roller")
-            cntBadSignal += 1
+    overallMeter += meters_in_timespan
+    overallKilo  += kilos_in_timespan
 
-        return (cntBadSignal == 0)
+    kilos_per_meter = kilos_in_timespan / meters_in_timespan
+    kilo_per_ha     = kilos_per_meter * METERS_PER_HEKTAR
 
-    def current(self):
-        currentMillis = getMillis()
-        signalsWheel  = self._bufWheel.getSignalsWithinTimespan(timestampNow=currentMillis,  timespan=self._timespanMillisToWatch)
-        signalsRoller = self._bufRoller.getSignalsWithinTimespan(timestampNow=currentMillis, timespan=self._timespanMillisToWatch)
-        print("signals wheel: {}\tsignals roller: {}".format(signalsWheel, signalsRoller))
-
-        if self.checkSignals(signalsWheel, signalsRoller) == False:
-            return 0,0,0
-
-        meters_in_timespan = signalsWheel  / self._signals_per_meter
-        kilos_in_timespan  = signalsRoller / self._signals_per_kilo
-
-        self.overallMeter += meters_in_timespan
-        self.overallKilo  += kilos_in_timespan
-
-        kilos_per_meter = kilos_in_timespan / meters_in_timespan
-        kilo_per_ha     = kilos_per_meter * self.METERS_PER_HEKTAR
-
-        return  kilo_per_ha, self.overallMeter, self.overallKilo
+    return  kilo_per_ha, overallMeter, overallKilo
