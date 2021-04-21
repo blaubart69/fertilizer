@@ -1,14 +1,17 @@
-import time,sched,threading
+from signalBuf import SignalBuf 
 
-def doit():
-    print("do it")
-    threading.Timer(1, doit).run()
+arr = [-1] * 1024
+print(len(arr))
 
-t = threading.Timer(1, doit)
-t.start()
+#sb = SignalBuf(10)
+#sb.tick(100)
+#sb.tick(149)
+#sb.tick(200)
+#sb.tick(250)
+#sb.tick(300)
 
-print("waiting for timer...")
-time.sleep(5)
+#cnt = sb.getSignalsWithinTimespan( timestampNow=350, timespan=200)
+#print("cnt: {}".format(cnt))
 
 #milliseconds = int(time.time() * 1000)
 #print("Time in milliseconds since epoch {}".format( milliseconds))

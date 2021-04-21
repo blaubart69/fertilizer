@@ -1,9 +1,11 @@
 class RingBuf:
     def __init__(self,size):
-        self.buf = [0] * size
+        self.buf = [-1] * size
         self.idx = -1
+        self.overallSignals = 0
 
-    def insert(self,val):
+    def insert_timestamp(self,val):
+        self.overallSignals += 1
         self.idx += 1
         if self.idx == len(self.buf):
             self.idx = 0
@@ -16,19 +18,29 @@ class SignalBuf:
     
     def tick(self,timestamp):
         self.ticks += 1
-        self.rbuf.insert(timestamp)
+        self.rbuf.insert_timestamp(timestamp)
+        print("inserting timestamp: {}, rbuf.idx: {}".format(timestamp, self.rbuf.idx))
 
     def getSignalsWithinTimespan(self, timestampNow, timespan):
         cnt=0
         readIdx = self.rbuf.idx
+        print("readIdx={}".format(readIdx))
+        if readIdx == -1:
+            return 0
 
         for i in range(len(self.rbuf.buf)):
-            if (timestampNow - self.rbuf[readIdx]) > timespan:
+            bufValue = self.rbuf.buf[readIdx]
+            if bufValue == -1:
+                return cnt
+
+            diff = timestampNow - bufValue
+            print("bufValue: {}, diff: {}".format(bufValue,diff))
+            if diff > timespan:
                 return cnt
                 break
             else:
                 cnt += 1
-                readIdx =- 1
+                readIdx = readIdx - 1
                 if readIdx < 0:
                     readIdx = len(self.rbuf.buf)-1
 

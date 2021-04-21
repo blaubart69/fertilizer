@@ -7,7 +7,7 @@ urls = (
     '/(.*)', 'RequestHandler'
 )
 app = web.application(urls, globals())
-_calc = calc.Calc(5000, duenger_kg=6.1, duenger_signals=20, wheel_meter=50, wheel_signals=377)
+_calc = calc.Calc(timespanMillisToWatch=5000, duenger_kg=6.1, duenger_signals=20, wheel_meter=50, wheel_signals=377)
 
 class RequestHandler:
 
@@ -21,11 +21,14 @@ class RequestHandler:
             return json.dumps(fertilizer.reset())
 
     def POST(self, path):
-        inputData = json.loads(web.data())
+        #inputData = json.loads(web.data())
         if path == 'applyChanges':
             return json.dumps(fertilizer.applyChanges(inputData))
         elif path == 'calculate':
-            return json.dumps(fertilizer.calculate(inputData))
+            currentKiloPerHa, overallDistanceMeter, overallKilo = _calc.current()
+            print("aktuell kg/ha: {}\tkg: \t{}\tm: {}".format(currentKiloPerHa, overallDistanceMeter, overallKilo))
+            return json.dumps({'distance': overallDistanceMeter, 'amount': overallKilo, 'calculated': currentKiloPerHa})
+            #return json.dumps(fertilizer.calculate(inputData))
         else:
             print ('Nothing')
 
