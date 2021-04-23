@@ -8,7 +8,7 @@ app = web.application(urls, globals())
 
 def calcCurrent():
     cal, dis, amo = calc.current()
-    print(f"aktuell kg/ha: {cal}\tm: {dis}\tkg: \t{amo}")
+    print(f"aktuell kg/ha: {cal:.1f}\tm: {dis:.1f}\tkg: \t{amo:.1f}")
     return json.dumps({'calculated': cal, 'distance': dis, 'amount': amo, 'distancePerDay': dis / 1000 + 5, 'amountPerDay': amo + 500})
 
 class RequestHandler:
@@ -35,5 +35,5 @@ if __name__ == "__main__":
     # fixed values for KALI
     calc.create(timespanMillisToWatch=20000)
     signals,kilo = calc.DuengerRatio["Kali"]
-    calc.setDuenger(kilo,signals)
+    calc.setDuenger(signals,kilo)
     app.run()
