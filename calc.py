@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import time, buffer
-import calcdemo
-#import calcgpio
+#import calcdemo
+import calcgpio
 
 DuengerRatio = {
       "Kali"      : ( 30, 6.1  )
@@ -36,10 +36,10 @@ def create(timespanMillisToWatch=5000):
     _timespanMillisToWatch = timespanMillisToWatch
 
     # !!! ATTENTION ATTENTION !!! switch between demo and gpio mode
-    calcdemo.setBuffer(_bufWheel, _bufRoller)
-    calcdemo.setup()
-    #calcgpio.setBuffer(_bufWheel, _bufRoller)
-    #calcgpio.setup()
+    #calcdemo.setBuffer(_bufWheel, _bufRoller)
+    #calcdemo.setup()
+    calcgpio.setBuffer(_bufWheel, _bufRoller)
+    calcgpio.setup()
 
 def setDuenger(duenger_name, duenger_signals, duenger_kg):
     global _signals_per_kilo, currentDuenger
