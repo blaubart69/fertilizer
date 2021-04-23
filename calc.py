@@ -7,6 +7,7 @@ DuengerRatio = {
       "Kali"      : ( 30, 6.1  )
     , "Harnstoff" : ( 30, 4.0  )
     , "Phosphor"  : ( 30, 4.95 )
+    , "KAS"       : ( 30, 5.55 )
 }
 
 _BCM_wheel  = 23
