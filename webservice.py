@@ -15,13 +15,13 @@ def calcCurrent():
 class RequestHandler:
 
     def GET(self, path):
-        if path == '':
-            raise web.seeother('/static/index.html')
-        elif path == 'stop':
+        if path == 'stop':
             return json.dumps(fertilizer.stop())
         elif path == 'reset':
             calc.reset()
             return calcCurrent()
+        else:
+            raise web.seeother('/static/index.html')
 
     def POST(self, path):
         inputData = json.loads(web.data())
