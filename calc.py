@@ -15,6 +15,8 @@ _timespanMillisToWatch = 5000
 _signals_per_meter = 0
 _signals_per_kilo =  0
 
+_lastMillis = 0
+
 overallMeter = 0
 overallKilo = 0
 
@@ -50,8 +52,9 @@ def checkSignals(cntWheel, cntRoller):
     return (cntBadSignal == 0)
 
 def current():
-    global overallMeter, overallKilo
+    global overallMeter, overallKilo, _lastMillis
     currentMillis = int(time.time() * 1000)
+
     signalsWheel  = _bufWheel.getSignalsWithinTimespan(timestampNow=currentMillis,  timespan=_timespanMillisToWatch)
     signalsRoller = _bufRoller.getSignalsWithinTimespan(timestampNow=currentMillis, timespan=_timespanMillisToWatch)
     print("signals wheel: {}\tsignals roller: {}".format(signalsWheel, signalsRoller))
@@ -62,10 +65,21 @@ def current():
     meters_in_timespan = signalsWheel  / _signals_per_meter
     kilos_in_timespan  = signalsRoller / _signals_per_kilo
 
-    overallMeter += meters_in_timespan
-    overallKilo  += kilos_in_timespan
-
     kilos_per_meter = kilos_in_timespan / meters_in_timespan
     kilo_per_ha     = kilos_per_meter * METERS_PER_HEKTAR
+
+    if _lastMillis != 0:
+        millis_diff = currentMillis - _lastMillis   # 2,5s
+        
+        signalsWheel_lastDiff  = _bufWheel.getSignalsWithinTimespan(timestampNow=currentMillis,  timespan=millis_diff)
+        signalsRoller_lastDiff = _bufRoller.getSignalsWithinTimespan(timestampNow=currentMillis, timespan=millis_diff)
+
+        meter_since_last_refresh  = signalsWheel_lastDiff  / _signals_per_meter
+        kilos_since_last_refresh  = signalsRoller_lastDiff / _signals_per_kilo
+
+        overallMeter += meter_since_last_refresh
+        overallKilo  += kilos_since_last_refresh
+
+    _lastMillis = currentMillis
 
     return  kilo_per_ha, overallMeter, overallKilo

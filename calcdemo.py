@@ -7,8 +7,8 @@ _BCM_roller = 24
 _bufWheel  = None
 _bufRoller = None
 
-_fakeWheelDelay = 0.1
-_fakeRollerDelay = 3.33
+_fakeWheelDelay  = 0.047
+_fakeRollerDelay = 1.56
 
 def setBuffer(bufWheel, bufRoller):
     global _bufWheel, _bufRoller
