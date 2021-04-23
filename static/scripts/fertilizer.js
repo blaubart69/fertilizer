@@ -13,7 +13,9 @@ angular.module('fertilizer', [])
         };
         $scope.response = {
             distance: 0,
+            distancePerDay: 0,
             amount: 0,
+            amountPerDay: 0,
             calculated: 0
         };
 
@@ -41,7 +43,7 @@ angular.module('fertilizer', [])
         this.startCalculation = function() {
             if (angular.isDefined(stop)) return;
   
-            stop = $interval(this.calculate, 5000);
+            stop = $interval(this.calculate, 2500);
         };
         this.stopCalculation = function() {
             if (angular.isDefined(stop)) {
