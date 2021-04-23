@@ -4,6 +4,7 @@ angular.module('fertilizer', [])
         // TO AVOID triggering the pre-flight OPTIONS request
         $http.defaults.headers.post["Content-Type"] = "text/plain";
 
+        $scope.fertilizer = 'Kali';
         $scope.fertilizers = ['Kali', 'Phosphor', 'Harnstoff', 'KAS'];
         $scope.data = {
             amountPerArea: 50,
@@ -33,9 +34,10 @@ angular.module('fertilizer', [])
             $http.get('/reset').then(handleResponse);
         };
         this.calculate = function () {
-            $http.post('/calculate', $scope.data).then(handleResponse);
+            $http.get('/calculate').then(handleResponse);
         };
         this.applyChanges = function () {
+            $scope.data.fertilizer = $scope.fertilizer;
             $http.post('/applyChanges', $scope.data).then(handleResponse);
         };
 

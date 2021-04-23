@@ -8,8 +8,8 @@ app = web.application(urls, globals())
 
 def calcCurrent():
     cal, dis, amo = calc.current()
-    print(f"aktuell kg/ha: {cal:.1f}\tm: {dis:.1f}\tkg: \t{amo:.1f}")
-    return json.dumps({'calculated': cal, 'distance': dis, 'amount': amo, 'distancePerDay': dis / 1000 + 5, 'amountPerDay': amo + 500})
+    print(f"aktuell kg/ha: {cal:.1f}\tm: {dis:.1f}\tkg: \t{amo:.1f}\t{calc.currentDuenger}")
+    return json.dumps({'calculated': cal, 'distance': dis, 'amount': amo, 'fertilizer': calc.currentDuenger})
 
 class RequestHandler:
 
@@ -19,16 +19,18 @@ class RequestHandler:
         elif path == 'reset':
             calc.reset()
             return calcCurrent()
+        elif path == 'calculate':
+            return calcCurrent()
         else:
             raise web.seeother('/static/index.html')
 
     def POST(self, path):
         inputData = json.loads(web.data())
+        print(f"input data:{inputData}")
         if path == 'applyChanges':
-            signals,kilo = calc.DuengerRatio[inputData.fertilizer]
-            calc.setDuenger(inputData.fertilizer, signals, kilo)
-            return calcCurrent()
-        elif path == 'calculate':
+            print(f"apply changes:{inputData['fertilizer']}")
+            signals,kilo = calc.DuengerRatio[inputData["fertilizer"]]
+            calc.setDuenger(inputData["fertilizer"], signals, kilo)
             return calcCurrent()
         else:
             print ('Nothing')
