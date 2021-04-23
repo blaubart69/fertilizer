@@ -3,6 +3,12 @@ import time, buffer
 import calcdemo
 #import calcgpio
 
+DuengerRatio = {
+      "Kali"      : ( 30, 6.1  )
+    , "Harnstoff" : ( 30, 4.0  )
+    , "Phosphor"  : ( 30, 4.95 )
+}
+
 _BCM_wheel  = 23
 _BCM_roller = 24
 _bufSizeSignals = 1024
@@ -12,26 +18,31 @@ _bufWheel  = buffer.SignalBuf(_bufSizeSignals)
 _bufRoller = buffer.SignalBuf(_bufSizeSignals)
 _timespanMillisToWatch = 5000
 
-_signals_per_meter = 0
+wheel_meter=50
+wheel_signals=377
+_signals_per_meter = wheel_signals / wheel_meter
+
 _signals_per_kilo =  0
 
 _lastMillis = 0
 
 overallMeter = 0
 overallKilo = 0
+currentDuenger = "Kali"
 
-def create(timespanMillisToWatch=5000, duenger_kg=6.1, duenger_signals=30, wheel_meter=50, wheel_signals=377):
-    global _timespanMillisToWatch, _signals_per_meter, _signals_per_kilo
+def create(timespanMillisToWatch=5000):
+    global _timespanMillisToWatch
     _timespanMillisToWatch = timespanMillisToWatch
-
-    _signals_per_meter = wheel_signals   / wheel_meter
-    _signals_per_kilo =  duenger_signals / duenger_kg
 
     # !!! ATTENTION ATTENTION !!! switch between demo and gpio mode
     calcdemo.setBuffer(_bufWheel, _bufRoller)
     calcdemo.setup()
     #calcgpio.setBuffer(_bufWheel, _bufRoller)
     #calcgpio.setup()
+
+def setDuenger(duenger_signals, duenger_kg):
+    global _signals_per_kilo
+    _signals_per_kilo =  duenger_signals / duenger_kg
 
 def reset():
     global overallKilo, overallMeter

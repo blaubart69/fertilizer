@@ -33,5 +33,7 @@ class RequestHandler:
 
 if __name__ == "__main__":
     # fixed values for KALI
-    calc.create(timespanMillisToWatch=20000, duenger_kg=6.1, duenger_signals=30, wheel_meter=50, wheel_signals=377)
+    calc.create(timespanMillisToWatch=20000)
+    signals,kilo = calc.DuengerRatio["Kali"]
+    calc.setDuenger(kilo,signals)
     app.run()
