@@ -25,7 +25,9 @@ class RequestHandler:
     def POST(self, path):
         inputData = json.loads(web.data())
         if path == 'applyChanges':
-            return json.dumps(fertilizer.applyChanges(inputData))
+            signals,kilo = calc.DuengerRatio[inputData.fertilizer]
+            calc.setDuenger(inputData.fertilizer, signals, kilo)
+            return calcCurrent()
         elif path == 'calculate':
             return calcCurrent()
         else:
@@ -35,5 +37,5 @@ if __name__ == "__main__":
     # fixed values for KALI
     calc.create(timespanMillisToWatch=20000)
     signals,kilo = calc.DuengerRatio["Kali"]
-    calc.setDuenger(signals,kilo)
+    calc.setDuenger("Kali",signals,kilo)
     app.run()

@@ -40,8 +40,9 @@ def create(timespanMillisToWatch=5000):
     #calcgpio.setBuffer(_bufWheel, _bufRoller)
     #calcgpio.setup()
 
-def setDuenger(duenger_signals, duenger_kg):
-    global _signals_per_kilo
+def setDuenger(duenger_name, duenger_signals, duenger_kg):
+    global _signals_per_kilo, currentDuenger
+    currentDuenger = duenger_name
     _signals_per_kilo =  duenger_signals / duenger_kg
 
 def reset():
