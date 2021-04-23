@@ -8,8 +8,8 @@ app = web.application(urls, globals())
 
 def calcCurrent():
     cal, dis, amo = calc.current()
-    print(f"aktuell kg/ha: {cal}\tkg: \t{dis}\tm: {amo}")
-    return json.dumps({'distance': dis, 'amount': amo, 'calculated': cal, 'distancePerDay': dis / 1000 + 5, 'amountPerDay': amo + 500})
+    print(f"aktuell kg/ha: {cal}\tm: {dis}\tkg: \t{amo}")
+    return json.dumps({'calculated': cal, 'distance': dis, 'amount': amo, 'distancePerDay': dis / 1000 + 5, 'amountPerDay': amo + 500})
 
 class RequestHandler:
 
