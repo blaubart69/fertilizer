@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-
-import time
-import RPi.GPIO as GPIO
-#import threading
-import buffer
+import time, buffer
+import calcdemo
+#import calcgpio
 
 _BCM_wheel  = 23
 _BCM_roller = 24
@@ -27,46 +25,11 @@ def create(timespanMillisToWatch=5000, duenger_kg=6.1, duenger_signals=30, wheel
     _signals_per_meter = wheel_signals   / wheel_meter
     _signals_per_kilo =  duenger_signals / duenger_kg
 
-def getMillis():
-    milliseconds = int(time.time() * 1000)
-    return milliseconds
-
-
-def _interrupt_callback(sig):
-    timestampSignal = getMillis()
-
-    #print("signal from {}".format(sig))
-
-    if sig == _BCM_wheel:
-        _bufWheel.tick(timestampSignal)
-    elif sig == _BCM_roller:
-        _bufRoller.tick(timestampSignal)
-    else:
-        print("signal from wrong pin {}".format(sig))
-
-def setupGPIO():
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(_BCM_wheel, GPIO.IN)
-    GPIO.setup(_BCM_roller, GPIO.IN)
-    GPIO.add_event_detect(_BCM_wheel,  GPIO.FALLING, callback=_interrupt_callback)
-    GPIO.add_event_detect(_BCM_roller, GPIO.FALLING, callback=_interrupt_callback)
-
-#_fakeWheelDelay = 0.1
-#_fakeRollerDelay = 3.33
-
-#def fakeWheelSignal():
-#    _interrupt_callback(_BCM_wheel)
-#    threading.Timer(_fakeWheelDelay, fakeWheelSignal).start()
-
-#def fakeRollerSignal():
-#    _interrupt_callback(_BCM_roller)
-#    threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()
-
-#def setupFakeGPIOsignals():
-#    print("setup fake signals...")
-#    threading.Timer(_fakeWheelDelay, fakeWheelSignal).start()
-#    threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()
-#    print("setup fake signals...done")
+    # !!! ATTENTION ATTENTION !!! switch between demo and gpio mode
+    calcdemo.setBuffer(_bufWheel, _bufRoller)
+    calcdemo.setup()
+    #calcgpio.setBuffer(_bufWheel, _bufRoller)
+    #calcgpio.setup()
 
 def reset():
     global overallKilo, overallMeter
@@ -88,7 +51,7 @@ def checkSignals(cntWheel, cntRoller):
 
 def current():
     global overallMeter, overallKilo
-    currentMillis = getMillis()
+    currentMillis = int(time.time() * 1000)
     signalsWheel  = _bufWheel.getSignalsWithinTimespan(timestampNow=currentMillis,  timespan=_timespanMillisToWatch)
     signalsRoller = _bufRoller.getSignalsWithinTimespan(timestampNow=currentMillis, timespan=_timespanMillisToWatch)
     print("signals wheel: {}\tsignals roller: {}".format(signalsWheel, signalsRoller))
