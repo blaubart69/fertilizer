@@ -26,7 +26,6 @@ class RequestHandler:
 
     def POST(self, path):
         inputData = json.loads(web.data())
-        print(f"input data:{inputData}")
         if path == 'applyChanges':
             print(f"apply changes:{inputData['fertilizer']}")
             signals,kilo = calc.DuengerRatio[inputData["fertilizer"]]

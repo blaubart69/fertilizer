@@ -25,6 +25,7 @@ angular.module('fertilizer', [])
             if (response.status == 200) {
                 console.log('data', response.data);
                 $scope.response = response.data;
+                $scope.data.fertilizer = response.data.fertilizer;
             }
         };
         this.stop = function () {

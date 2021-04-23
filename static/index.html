@@ -85,7 +85,7 @@
 				</div>
 				<div class="col-xs-5 pull-right">
 					<label>&nbsp;</label>
-					<button name="apply" data-ng-click="ctrl.applyChanges()" class="btn btn-block btn-primary">
+					<button name="apply" data-ng-disabled="data.fertilizer === fertilizer"  data-ng-click="ctrl.applyChanges()" class="btn btn-block btn-primary">
 						<span class="glyphicon glyphicon-ok"></span>&nbsp;OK
 					</button>
 				</div>
