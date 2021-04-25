@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import json, web, fertilizer, calc
+import json, web, calc
 
 urls = (
     '/(.*)', 'RequestHandler'
@@ -14,9 +14,7 @@ def calcCurrent():
 class RequestHandler:
 
     def GET(self, path):
-        if path == 'stop':
-            return json.dumps(fertilizer.stop())
-        elif path == 'reset':
+        if path == 'reset':
             calc.reset()
             return calcCurrent()
         elif path == 'calculate':
@@ -25,11 +23,10 @@ class RequestHandler:
             raise web.seeother('/static/index.html')
 
     def POST(self, path):
-        inputData = json.loads(web.data())
         if path == 'applyChanges':
-            print(f"apply changes:{inputData['fertilizer']}")
-            signals,kilo = calc.DuengerRatio[inputData["fertilizer"]]
-            calc.setDuenger(inputData["fertilizer"], signals, kilo)
+            fertilizer = web.data().decode('UTF-8')
+            signals,kilo = calc.DuengerRatio[fertilizer]
+            calc.setDuenger(fertilizer, signals, kilo)
             return calcCurrent()
         else:
             print ('Nothing')

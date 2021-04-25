@@ -6,13 +6,8 @@ angular.module('fertilizer', [])
 
         $scope.fertilizer = 'Kali';
         $scope.fertilizers = ['Kali', 'Phosphor', 'Harnstoff', 'KAS'];
-        $scope.data = {
-            amountPerArea: 50,
-            fertilizer: 'Kali',
-            gpioDistance: 12,
-            gpioAmount: 13
-        };
         $scope.response = {
+            fertilizer: 'Kali',
             distance: 0,
             distancePerDay: 0,
             amount: 0,
@@ -21,11 +16,9 @@ angular.module('fertilizer', [])
         };
 
         const handleResponse = function (response) {
-            console.log(response);
             if (response.status == 200) {
                 console.log('data', response.data);
                 $scope.response = response.data;
-                $scope.data.fertilizer = response.data.fertilizer;
             }
         };
         this.stop = function () {
@@ -38,8 +31,7 @@ angular.module('fertilizer', [])
             $http.get('/calculate').then(handleResponse);
         };
         this.applyChanges = function () {
-            $scope.data.fertilizer = $scope.fertilizer;
-            $http.post('/applyChanges', $scope.data).then(handleResponse);
+            $http.post('/applyChanges', $scope.fertilizer).then(handleResponse);
         };
 
         var stop;
