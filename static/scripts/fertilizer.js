@@ -21,9 +21,6 @@ angular.module('fertilizer', [])
                 $scope.response = response.data;
             }
         };
-        this.stop = function () {
-            $http.get('/stop').then(handleResponse);
-        };
         this.reset = function () {
             $http.get('/reset').then(handleResponse);
         };
