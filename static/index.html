@@ -21,66 +21,77 @@
 		<form name="FertilizerForm" method="post">
 			<div class="row"><div class="col-sm-12">&nbsp;</div></div>
 			<div class="row">
-				<div class="col-sm-8">
-					<h1 class="display-1">
-						<table>
-							<tr><td><small>aktueller Auswurf (kg / ha)</small></td><td style="text-align: right;">&nbsp;{{response.calculated | number:2}}</td></tr>
-							<tr><td><small>zur&uuml;ckgelegte Distanz in m</small></td><td style="text-align: right;">&nbsp;{{response.distance | number:2}}</td></tr>
-							<tr><td><small>ausgestreute Menge in kg</small></td><td style="text-align: right;">&nbsp;{{response.amount | number:2}}</td></tr>
-						</table>
-					</h1>
+				<div class="col-xs-12">
+					<div class="col-xs-12">
+						<h2 class="display-2">
+							<span class="text-uppercase">{{data.fertilizer}}</span>
+							<small>&nbsp;(kg/ha)</small>
+							<span class="pull-right">&nbsp;{{response.calculated | number:1}}</span>
+						</h2>
+					</div>
 				</div>
-				<div class="col-sm-4">
-					<div class="col-sm-12">
-						<button name="stop" data-ng-click="ctrl.stop()" class="btn btn-block btn-lg btn-danger">
-							<span class="glyphicon glyphicon-off"></span>
+				<div class="col-xs-12"><hr /></div>
+				<div class="col-xs-12">
+					<div class="col-xs-12">
+						<h3 class="display-3">
+							<small>Aktuelles Feld (kg)</small>
+							<span class="pull-right">&nbsp;{{response.amount | number:1}}</span>
+						</h3>
+					</div>
+					<div class="col-xs-6">
+						<h4 class="display-4">
+							<small>Strecke (m)</small>
+							<span class="pull-right">&nbsp;{{response.distance | number:1}}</span>
+						</h4>
+					</div>
+					<div class="col-xs-5 pull-right">
+						<button name="reset" data-ng-click="ctrl.reset()" class="btn btn-block btn-secondary">
+							<span class="glyphicon glyphicon-remove"></span>&nbsp;Reset
 						</button>
 					</div>
-					<div class="col-sm-12">
-						<button name="reset" data-ng-click="ctrl.reset()" class="btn btn-block btn-lg btn-primary">
-							<span class="glyphicon glyphicon-remove"></span> Zur&uuml;setzen
+				</div>
+				<div class="col-xs-12"><hr /></div>
+				<div class="col-xs-12">
+					<div class="col-xs-12">
+						<h3 class="display-3">							
+							<small><span class="text-uppercase">{{data.fertilizer}}</span>&nbsp;(kg/Tag)</small>
+							<span class="pull-right">&nbsp;{{response.amountPerDay | number:1}}</span>
+						</h3>
+					</div>
+					<div class="col-xs-6">
+						<h4 class="display-4">
+							<small>Strecke (km/Tag)</small>
+							<span class="pull-right">&nbsp;{{response.distancePerDay | number:1}}</span>
+						</h4>
+					</div>
+					<div class="col-xs-5 pull-right">
+						<button name="reset" data-ng-click="ctrl.reset()" class="btn btn-block btn-secondary">
+							<span class="glyphicon glyphicon-remove"></span>&nbsp;Reset
 						</button>
 					</div>
 				</div>
 			</div>
-			<div class="row"><div class="col-sm-12">&nbsp;</div></div>
+			<div class="row"><div class="col-xs-12"><hr /></div></div>
 			<div class="form-row">
-				<div class="col-sm-4">
+				<!--
+				<div class="col-xs-12">
 					<label>Kg pro Ha</label>
 					<input name="amountPerArea" data-ng-model="data.amountPerArea" class="form-control" />
 				</div>
-				<div class="col-sm-4">
+				-->
+				<div class="col-xs-12">
 					<label>D&uuml;nger</label>
-					<select name="name" data-ng-model="data.fertilizer" class="form-control">
+					<select name="name" data-ng-model="fertilizer" class="form-control">
 						<option data-ng-repeat="f in fertilizers">{{f}}</option>
 					</select>
 				</div>
-				<div class="col-sm-4">
+				<div class="col-xs-5 pull-right">
 					<label>&nbsp;</label>
-					<button name="apply" data-ng-click="ctrl.applyChanges()" class="btn btn-block btn-primary">
-						<span class="glyphicon glyphicon-ok"></span>
+					<button name="apply" data-ng-disabled="data.fertilizer === fertilizer"  data-ng-click="ctrl.applyChanges()" class="btn btn-block btn-primary">
+						<span class="glyphicon glyphicon-ok"></span>&nbsp;OK
 					</button>
 				</div>
 			</div>
-			<!--
-			<div class="row"><div class="col-sm-12">&nbsp;</div></div>
-			<div class="form-row">
-				<div class="col-sm-4">
-					<label>GPIO-Strecke</label>
-					<input name="gpioDistance" data-ng-model="data.gpioDistance" class="form-control" />
-				</div>
-				<div class="col-sm-4">
-					<label>GPIO-Menge</label>
-					<input name="gpioAmount" data-ng-model="data.gpioAmount" class="form-control" />
-				</div>
-				<div class="col-sm-4">
-					<label>&nbsp;</label>
-					<button name="apply" data-ng-click="ctrl.applyChanges()" class="btn btn-block btn-primary">
-						<span class="glyphicon glyphicon-ok"></span>
-					</button>
-				</div>
-			</div>
-			-->
 		</form>
 	</div>
 </body>

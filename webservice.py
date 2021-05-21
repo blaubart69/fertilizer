@@ -6,11 +6,10 @@ urls = (
 )
 app = web.application(urls, globals())
 
-
 def calcCurrent():
-    currentKiloPerHa, overallDistanceMeter, overallKilo = calc.current()
-    print("aktuell kg/ha: {}\tkg: \t{}\tm: {}".format(currentKiloPerHa, overallDistanceMeter, overallKilo))
-    return json.dumps({'distance': overallDistanceMeter, 'amount': overallKilo, 'calculated': currentKiloPerHa})
+    cal, dis, amo = calc.current()
+    print(f"aktuell kg/ha: {cal:.1f}\tm: {dis:.1f}\tkg: \t{amo:.1f}\t{calc.currentDuenger}")
+    return json.dumps({'calculated': cal, 'distance': dis, 'amount': amo, 'fertilizer': calc.currentDuenger})
 
 class RequestHandler:
 
@@ -20,21 +19,24 @@ class RequestHandler:
         elif path == 'reset':
             calc.reset()
             return calcCurrent()
+        elif path == 'calculate':
+            return calcCurrent()
         else:
             raise web.seeother('/static/index.html')
 
     def POST(self, path):
         inputData = json.loads(web.data())
         if path == 'applyChanges':
-            return json.dumps(fertilizer.applyChanges(inputData))
-        elif path == 'calculate':
+            print(f"apply changes:{inputData['fertilizer']}")
+            signals,kilo = calc.DuengerRatio[inputData["fertilizer"]]
+            calc.setDuenger(inputData["fertilizer"], signals, kilo)
             return calcCurrent()
         else:
             print ('Nothing')
 
 if __name__ == "__main__":
-    calc.setupGPIO()
-    #calc.setupFakeGPIOsignals()    
     # fixed values for KALI
-    calc.create(timespanMillisToWatch=20000, duenger_kg=6.1, duenger_signals=30, wheel_meter=50, wheel_signals=377)
+    calc.create(timespanMillisToWatch=20000)
+    signals,kilo = calc.DuengerRatio["Kali"]
+    calc.setDuenger("Kali",signals,kilo)
     app.run()

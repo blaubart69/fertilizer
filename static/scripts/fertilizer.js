@@ -4,6 +4,7 @@ angular.module('fertilizer', [])
         // TO AVOID triggering the pre-flight OPTIONS request
         $http.defaults.headers.post["Content-Type"] = "text/plain";
 
+        $scope.fertilizer = 'Kali';
         $scope.fertilizers = ['Kali', 'Phosphor', 'Harnstoff', 'KAS'];
         $scope.data = {
             amountPerArea: 50,
@@ -13,7 +14,9 @@ angular.module('fertilizer', [])
         };
         $scope.response = {
             distance: 0,
+            distancePerDay: 0,
             amount: 0,
+            amountPerDay: 0,
             calculated: 0
         };
 
@@ -22,6 +25,7 @@ angular.module('fertilizer', [])
             if (response.status == 200) {
                 console.log('data', response.data);
                 $scope.response = response.data;
+                $scope.data.fertilizer = response.data.fertilizer;
             }
         };
         this.stop = function () {
@@ -31,9 +35,10 @@ angular.module('fertilizer', [])
             $http.get('/reset').then(handleResponse);
         };
         this.calculate = function () {
-            $http.post('/calculate', $scope.data).then(handleResponse);
+            $http.get('/calculate').then(handleResponse);
         };
         this.applyChanges = function () {
+            $scope.data.fertilizer = $scope.fertilizer;
             $http.post('/applyChanges', $scope.data).then(handleResponse);
         };
 
@@ -41,7 +46,7 @@ angular.module('fertilizer', [])
         this.startCalculation = function() {
             if (angular.isDefined(stop)) return;
   
-            stop = $interval(this.calculate, 5000);
+            stop = $interval(this.calculate, 2500);
         };
         this.stopCalculation = function() {
             if (angular.isDefined(stop)) {
