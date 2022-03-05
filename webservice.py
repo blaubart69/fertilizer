@@ -20,6 +20,12 @@ def saveSettings(jsonInput):
     with open('./conf/duenger.json', 'w') as outfile: 
       outfile.write(jsonInput)
 
+def applySettings():
+    jsonRationString = loadSettings()
+    jsonDuengerRatio = json.loads(jsonRationString)
+    print(jsonDuengerRatio)
+    calc.setDuengerRatio(jsonDuengerRatio)
+
 class RequestHandler:
 
     def GET(self, path):
@@ -44,7 +50,7 @@ class RequestHandler:
             settings = web.data().decode('UTF-8')
             print(settings)
             saveSettings(settings)
-            
+            applySettings()            
         else:
             print ('Nothing')
 
@@ -52,10 +58,7 @@ if __name__ == "__main__":
     # fixed values for KALI
     calc.create(timespanMillisToWatch=20000)
 
-    jsonRationString = loadSettings()
-    jsonDuengerRatio = json.loads(jsonRationString)
-    print(jsonDuengerRatio)
-    calc.setDuengerRatio(jsonDuengerRatio)
+    applySettings()
 
     signals,kilo = calc.DuengerRatio["Kali"]
     calc.setDuenger("Kali",signals,kilo)
