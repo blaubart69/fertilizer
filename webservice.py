@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import json, web, fertilizer, calc
+import json, web, calc
 
 urls = (
     '/(.*)', 'RequestHandler'
@@ -11,32 +11,55 @@ def calcCurrent():
     print(f"aktuell kg/ha: {cal:.1f}\tm: {dis:.1f}\tkg: \t{amo:.1f}\t{calc.currentDuenger}")
     return json.dumps({'calculated': cal, 'distance': dis, 'amount': amo, 'fertilizer': calc.currentDuenger})
 
+def loadSettings():
+    with open('./conf/duenger.json','r') as f: 
+      duenger_json = f.read()
+    return duenger_json
+
+def saveSettings(jsonInput):
+    with open('./conf/duenger.json', 'w') as outfile: 
+      outfile.write(jsonInput)
+
+def applySettings():
+    jsonRationString = loadSettings()
+    jsonDuengerRatio = json.loads(jsonRationString)
+    print(jsonDuengerRatio)
+    calc.setDuengerRatio(jsonDuengerRatio)
+
 class RequestHandler:
 
     def GET(self, path):
-        if path == 'stop':
-            return json.dumps(fertilizer.stop())
-        elif path == 'reset':
+        if path == 'reset':
             calc.reset()
             return calcCurrent()
         elif path == 'calculate':
             return calcCurrent()
+        elif path == 'settings':
+            return loadSettings()
         else:
             raise web.seeother('/static/index.html')
 
     def POST(self, path):
-        inputData = json.loads(web.data())
         if path == 'applyChanges':
-            print(f"apply changes:{inputData['fertilizer']}")
-            signals,kilo = calc.DuengerRatio[inputData["fertilizer"]]
-            calc.setDuenger(inputData["fertilizer"], signals, kilo)
+            fertilizer = web.data().decode('UTF-8')
+            signals,kilo = calc.DuengerRatio[fertilizer]
+            calc.setDuenger(fertilizer, signals, kilo)
             return calcCurrent()
+        elif path == 'settings':
+            print('Store settings')
+            settings = web.data().decode('UTF-8')
+            print(settings)
+            saveSettings(settings)
+            applySettings()            
         else:
             print ('Nothing')
 
 if __name__ == "__main__":
     # fixed values for KALI
     calc.create(timespanMillisToWatch=20000)
+
+    applySettings()
+
     signals,kilo = calc.DuengerRatio["Kali"]
     calc.setDuenger("Kali",signals,kilo)
     app.run()
