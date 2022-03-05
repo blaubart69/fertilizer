@@ -31,6 +31,10 @@ overallMeter = 0
 overallKilo = 0
 currentDuenger = "Kali"
 
+def setDuengerRatio(jsonDuengerRatio):
+  for ratio in jsonDuengerRatio:
+    DuengerRatio[ratio['name']] = (30, ratio['kg'])  
+
 def create(timespanMillisToWatch=5000):
     global _timespanMillisToWatch
     _timespanMillisToWatch = timespanMillisToWatch

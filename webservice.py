@@ -51,6 +51,12 @@ class RequestHandler:
 if __name__ == "__main__":
     # fixed values for KALI
     calc.create(timespanMillisToWatch=20000)
+
+    jsonRationString = loadSettings()
+    jsonDuengerRatio = json.loads(jsonRationString)
+    print(jsonDuengerRatio)
+    calc.setDuengerRatio(jsonDuengerRatio)
+
     signals,kilo = calc.DuengerRatio["Kali"]
     calc.setDuenger("Kali",signals,kilo)
     app.run()
