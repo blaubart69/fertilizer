@@ -91,8 +91,7 @@ angular.module('fertilizer')
         $scope.setting = {name: '', gramPerRotation: 0};
       }
       this.removeFertilizer = function(fertilizer) {
-        console.log('remove setting: ', fertilizer);
-        const newSettings = $scope.settings.filter(function(value, index) {
+        const newSettings = $scope.settings.filter(function(value) {
           return fertilizer !== value
         });
         $scope.settings = newSettings;
