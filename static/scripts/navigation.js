@@ -16,7 +16,12 @@ angular.module('fertilizer', ['ngRoute'])
         controller: 'ResetController',
        	controllerAs: 'ctrl'
     })
-    .otherwise({
+  .when('/settings',{
+      templateUrl: 'views/settings.html',
+      controller: 'SettingsController',
+      controllerAs: 'ctrl'
+    })
+  .otherwise({
     	redirectTo: '/current'
     });
 }]);

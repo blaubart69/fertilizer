@@ -81,4 +81,32 @@ angular.module('fertilizer')
             $scope.response = response.data;
         });
         console.log("initialize reset controller");
+    })
+    .controller('SettingsController', function ($scope, $http) {
+      $scope.settings = [];
+      $scope.setting = {name: '', gramPerRotation: 0};
+
+      this.addFertilizer = function() {
+        $scope.settings.push($scope.setting);
+        $scope.setting = {name: '', gramPerRotation: 0};
+      }
+      this.removeFertilizer = function(fertilizer) {
+        console.log('remove setting: ', fertilizer);
+        const newSettings = $scope.settings.filter(function(value, index) {
+          return fertilizer !== value
+        });
+        $scope.settings = newSettings;
+      }
+      this.loadSettings = function () {
+        $http.get('/settings').then(function (response) {
+          $scope.settings = response.data;
+        });
+      };
+      this.saveSettings = function () {
+        $http.post('/settings', $scope.settings).then(function (response) {
+          console.log(response);
+        });
+      }
+      // this.loadSettings();
+      console.log("initialize settings controller");
     });

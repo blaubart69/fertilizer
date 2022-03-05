@@ -19,6 +19,8 @@ class RequestHandler:
             return calcCurrent()
         elif path == 'calculate':
             return calcCurrent()
+        elif path == 'settings':
+            return calcCurrent()
         else:
             raise web.seeother('/static/index.html')
 
@@ -28,6 +30,8 @@ class RequestHandler:
             signals,kilo = calc.DuengerRatio[fertilizer]
             calc.setDuenger(fertilizer, signals, kilo)
             return calcCurrent()
+        elif path == 'settings':
+            print('Store settings')
         else:
             print ('Nothing')
 
