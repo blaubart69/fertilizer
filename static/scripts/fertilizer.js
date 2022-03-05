@@ -84,11 +84,11 @@ angular.module('fertilizer')
     })
     .controller('SettingsController', function ($scope, $http) {
       $scope.settings = [];
-      $scope.setting = {name: '', gramPerRotation: 0};
+      $scope.setting = {name: '', kg: 0};
 
       this.addFertilizer = function() {
         $scope.settings.push($scope.setting);
-        $scope.setting = {name: '', gramPerRotation: 0};
+        $scope.setting = {name: '', kg: 0};
       }
       this.removeFertilizer = function(fertilizer) {
         const newSettings = $scope.settings.filter(function(value) {
@@ -106,6 +106,6 @@ angular.module('fertilizer')
           console.log(response);
         });
       }
-      // this.loadSettings();
+      this.loadSettings();
       console.log("initialize settings controller");
     });

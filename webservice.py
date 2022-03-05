@@ -11,6 +11,15 @@ def calcCurrent():
     print(f"aktuell kg/ha: {cal:.1f}\tm: {dis:.1f}\tkg: \t{amo:.1f}\t{calc.currentDuenger}")
     return json.dumps({'calculated': cal, 'distance': dis, 'amount': amo, 'fertilizer': calc.currentDuenger})
 
+def loadSettings():
+    with open('./conf/duenger.json','r') as f: 
+      duenger_json = f.read()
+    return duenger_json
+
+def saveSettings(jsonInput):
+    with open('./conf/duenger.json', 'w') as outfile: 
+      outfile.write(jsonInput)
+
 class RequestHandler:
 
     def GET(self, path):
@@ -20,7 +29,7 @@ class RequestHandler:
         elif path == 'calculate':
             return calcCurrent()
         elif path == 'settings':
-            return calcCurrent()
+            return loadSettings()
         else:
             raise web.seeother('/static/index.html')
 
@@ -32,6 +41,10 @@ class RequestHandler:
             return calcCurrent()
         elif path == 'settings':
             print('Store settings')
+            settings = web.data().decode('UTF-8')
+            print(settings)
+            saveSettings(settings)
+            
         else:
             print ('Nothing')
 
