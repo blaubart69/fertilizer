@@ -5,7 +5,7 @@ angular.module('fertilizer')
         $http.defaults.headers.post["Content-Type"] = "text/plain";
 
         $scope.fertilizer = 'Kali';
-        $scope.fertilizers = ['Kali', 'Phosphor', 'Harnstoff', 'KAS'];
+        $scope.fertilizers = [];
         $scope.response = {
             fertilizer: 'Kali',
             distance: 0,
@@ -27,6 +27,13 @@ angular.module('fertilizer')
         this.applyChanges = function () {
             $http.post('/applyChanges', $scope.fertilizer).then(handleResponse);
         };
+        this.loadSettings = function () {
+          $http.get('/settings').then(function (response) {
+            angular.forEach(response.data, function(item) {
+              $scope.fertilizers.push(item.name);
+            });
+          });
+        };
 
         var stop;
         this.startCalculation = function() {
@@ -42,8 +49,8 @@ angular.module('fertilizer')
         };
         // Make sure that the interval is destroyed too
         $scope.$on('$destroy', this.stopCalculation);
-
         this.startCalculation();
+        this.loadSettings();
         console.log("initialize fertilizer controller");
     })
     .controller('CounterController', function ($scope, $http) {
