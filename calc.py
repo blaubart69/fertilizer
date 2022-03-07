@@ -1,7 +1,18 @@
 #!/usr/bin/env python3
 import time, buffer
-#import calcdemo
-import calcgpio
+
+try:
+    import calcgpio as calculator
+    print("I: using pysical GPIO pins")
+except ImportError:
+    print("""
+W: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+W: cannot import GPIO. using demo mode
+W: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+""")
+    import calcdemo as calculator
+
+#import calcgpio
 
 DuengerRatio = {
       "Kali"      : ( 30, 6.1  )
@@ -42,8 +53,10 @@ def create(timespanMillisToWatch=5000):
     # !!! ATTENTION ATTENTION !!! switch between demo and gpio mode
     #calcdemo.setBuffer(_bufWheel, _bufRoller)
     #calcdemo.setup()
-    calcgpio.setBuffer(_bufWheel, _bufRoller)
-    calcgpio.setup()
+    #calcgpio.setBuffer(_bufWheel, _bufRoller)
+    #calcgpio.setup()
+    calculator.setup()
+    calculator.setBuffer(_bufWheel, _bufRoller)
 
 def setDuenger(duenger_name, duenger_signals, duenger_kg):
     global _signals_per_kilo, currentDuenger
