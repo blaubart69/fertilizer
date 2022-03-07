@@ -47,10 +47,10 @@ class RequestHandler:
             return calcCurrent()
         elif path == 'settings':
             print('Store settings')
-            settings = web.data().decode('UTF-8')
-            print(settings)
-            saveSettings(settings)
-            applySettings()            
+            newSettings_json_string = web.data().decode('UTF-8')
+            print(newSettings_json_string)
+            saveSettings(newSettings_json_string)
+            calc.setDuengerRatio( json.loads(newSettings_json_string) )       
         else:
             print ('Nothing')
 
