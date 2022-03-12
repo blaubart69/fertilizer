@@ -10,11 +10,6 @@ _bufRoller = None
 _fakeWheelDelay  = 0.047
 _fakeRollerDelay = 1.56
 
-def setBuffer(bufWheel, bufRoller):
-    global _bufWheel, _bufRoller
-    _bufWheel = bufWheel
-    _bufRoller = bufRoller
-
 def _interrupt_callback(sig):
     timestampSignal = int(time.time() * 1000)
 
@@ -33,7 +28,10 @@ def fakeRollerSignal():
     _interrupt_callback(_BCM_roller)
     threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()
 
-def setup():
+def setup(bufWheel, bufRoller):
+    global _bufWheel, _bufRoller
+    _bufWheel  = bufWheel
+    _bufRoller = bufRoller
     print("setup fake signals...")
     threading.Timer(_fakeWheelDelay, fakeWheelSignal).start()
     threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()

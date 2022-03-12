@@ -50,13 +50,7 @@ def create(timespanMillisToWatch=5000):
     global _timespanMillisToWatch
     _timespanMillisToWatch = timespanMillisToWatch
 
-    # !!! ATTENTION ATTENTION !!! switch between demo and gpio mode
-    #calcdemo.setBuffer(_bufWheel, _bufRoller)
-    #calcdemo.setup()
-    #calcgpio.setBuffer(_bufWheel, _bufRoller)
-    #calcgpio.setup()
-    calculator.setup()
-    calculator.setBuffer(_bufWheel, _bufRoller)
+    calculator.setup(_bufWheel, _bufRoller)
 
 def setDuenger(duenger_name, duenger_signals, duenger_kg):
     global _signals_per_kilo, currentDuenger

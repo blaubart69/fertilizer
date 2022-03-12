@@ -8,11 +8,6 @@ _BCM_roller = 24
 _bufWheel  = None
 _bufRoller = None
 
-def setBuffer(bufWheel, bufRoller):
-    global _bufWheel, _bufRoller
-    _bufWheel = bufWheel
-    _bufRoller = bufRoller
-
 def _interrupt_callback(sig):
     timestampSignal = int(time.time() * 1000)
 
@@ -23,7 +18,10 @@ def _interrupt_callback(sig):
     else:
         print("signal from wrong pin {}".format(sig))
 
-def setup():
+def setup(bufWheel, bufRoller):
+    global _bufWheel, _bufRoller
+    _bufWheel = bufWheel
+    _bufRoller = bufRoller
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(_BCM_wheel, GPIO.IN)
     GPIO.setup(_BCM_roller, GPIO.IN)
