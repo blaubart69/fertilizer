@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import time, buffer
+import time, buffer, threading
 
 try:
     import calcgpio as calculator
@@ -40,17 +40,26 @@ _lastMillis = 0
 
 overallMeter = 0
 overallKilo = 0
+current_kilo_per_hektar = 0
+
 currentDuenger = "Kali"
 
 def setDuengerRatio(jsonDuengerRatio):
   for ratio in jsonDuengerRatio:
     DuengerRatio[ratio['name']] = (30, ratio['kg'])  
 
-def create(timespanMillisToWatch=5000):
+def init(timespanMillisToWatch=5000):
     global _timespanMillisToWatch
     _timespanMillisToWatch = timespanMillisToWatch
+    calculator.init(_bufWheel, _bufRoller)
 
-    calculator.setup(_bufWheel, _bufRoller)
+def _thread_process_signals():
+    while True:
+        time.sleep(1.0)
+        _process_signals()
+
+def start_process_signals_thread():
+    threading.Thread( target=_thread_process_signals ).start()
 
 def setDuenger(duenger_name, duenger_signals, duenger_kg):
     global _signals_per_kilo, currentDuenger
@@ -64,37 +73,32 @@ def reset():
     overallKilo = 0
 
 def checkSignals(cntWheel, cntRoller):
-    #cntBadSignal = 0
-
     if cntWheel == 0:
         print("E: no signals from wheel")
-        #cntBadSignal += 1
     if cntRoller == 0:
         print("E: no signals from roller")
-        #cntBadSignal += 1
 
-    #return (cntBadSignal == 0)
+def current_values():
+    return current_kilo_per_hektar, overallMeter, overallKilo
 
-def current():
-    global overallMeter, overallKilo, _lastMillis
+def _process_signals():
+    global overallMeter, overallKilo, _lastMillis, current_kilo_per_hektar
     currentMillis = int(time.time() * 1000)
 
     signalsWheel  = _bufWheel.getSignalsWithinTimespan(timestampNow=currentMillis,  timespan=_timespanMillisToWatch)
     signalsRoller = _bufRoller.getSignalsWithinTimespan(timestampNow=currentMillis, timespan=_timespanMillisToWatch)
-    print("signals wheel: {}\tsignals roller: {}, signal wheel overall: {}".format(signalsWheel, signalsRoller, _bufWheel.rbuf.overallSignals))
+    print("signals wheel/roller/wheel overall\t{}/{}/{}".format(signalsWheel, signalsRoller, _bufWheel.rbuf.overallSignals))
 
-    #if checkSignals(signalsWheel, signalsRoller) == False:
-    #    return 0,0,0
     checkSignals(signalsWheel, signalsRoller)
 
     meters_in_timespan = signalsWheel  / _signals_per_meter
     kilos_in_timespan  = signalsRoller / _signals_per_kilo
 
     if meters_in_timespan > 0:
-        kilos_per_meter = kilos_in_timespan / meters_in_timespan
-        kilo_per_ha     = kilos_per_meter * METERS_PER_HEKTAR
+        kilos_per_meter             = kilos_in_timespan / meters_in_timespan
+        current_kilo_per_hektar     = kilos_per_meter * METERS_PER_HEKTAR
     else:
-        kilo_per_ha = 0
+        current_kilo_per_hektar = 0
 
     if _lastMillis != 0:
         millis_diff = currentMillis - _lastMillis   # 2,5s
@@ -109,5 +113,3 @@ def current():
         overallKilo  += kilos_since_last_refresh
 
     _lastMillis = currentMillis
-
-    return  kilo_per_ha, overallMeter, overallKilo

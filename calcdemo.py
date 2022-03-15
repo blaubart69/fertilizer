@@ -28,7 +28,7 @@ def fakeRollerSignal():
     _interrupt_callback(_BCM_roller)
     threading.Timer(_fakeRollerDelay, fakeRollerSignal).start()
 
-def setup(bufWheel, bufRoller):
+def init(bufWheel, bufRoller):
     global _bufWheel, _bufRoller
     _bufWheel  = bufWheel
     _bufRoller = bufRoller

@@ -18,7 +18,7 @@ def _interrupt_callback(sig):
     else:
         print("signal from wrong pin {}".format(sig))
 
-def setup(bufWheel, bufRoller):
+def init(bufWheel, bufRoller):
     global _bufWheel, _bufRoller
     _bufWheel = bufWheel
     _bufRoller = bufRoller
